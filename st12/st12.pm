@@ -14,8 +14,7 @@ my @MODULES =(
 	\&show,
 	\&save,
 	\&load,
-	\&SendToDB,
-	\&exit
+	\&SendToDB
 	);
 my @ElNames=(
 	'Название',
@@ -78,6 +77,7 @@ sub menu{
 sub st12{
 	while(1){
 		my $ch = menu();
+		if ($ch=7){return;}
 		if($ch>=0&&defined $MODULES[$ch]){
 			$MODULES[$ch]->();
 		}
