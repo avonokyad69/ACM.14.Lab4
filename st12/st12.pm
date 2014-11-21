@@ -38,7 +38,7 @@ my @NAMES =(
 	'Выход из программы'
 	);
 	
-sub	SendToDB{
+sub SendToDB{
 	my $url = 'http://localhost/cgi-bin/lab3.cgi';
 	my $content = get $url;
 	my $student;
@@ -58,7 +58,6 @@ sub	SendToDB{
 		foreach my $eln(@ElNames){
 			$raq.="$eln=$el->{$eln}&";
 		}
-		
 		my $qwe = new HTTP::Request(GET =>Encode::encode('windows-1251', Encode::decode('cp866', $raq)));
 		$ua->request($qwe);
 	}
