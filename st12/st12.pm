@@ -44,12 +44,13 @@ sub SendToDB{
 	my $student;
 	die "Couldn't get $url" unless defined $content;
 	if($content =~ m/\d. Kushnikov V.|\d\d. Kushnikov V./i){
-		$student = unpack("x0 A1", $&);
+		$student = unpack("x0 A2", $&);
 	}else{
 		system("cls");
 		print "Номер не найден!";
 		return;
 	}
+	$student += 0 ;
 	my $ua = new LWP::UserAgent;
 	my $req;
 	$url.="?ElN=&student=$student&wtd=3&";
