@@ -2,7 +2,6 @@ package ST05;
 use strict;
 use LWP::UserAgent;
 use HTTP::Request;
-binmode STDOUT, ":utf8";
 my $student;
 
 sub st05
