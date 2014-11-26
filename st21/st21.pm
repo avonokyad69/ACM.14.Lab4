@@ -115,6 +115,7 @@ sub Load_from_file
 {	
 	print "Load from file\n";
 	my %buff = ();
+	%Items = ();
 	dbmopen(%buff,"st21/Shilenkov_dbm",0644) || die "Error open to file!";
 	
 	print "==========================\n";
