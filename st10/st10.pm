@@ -7,7 +7,7 @@ use URI::Escape;
 
 use constant EXIT_FLAG => 'exit';
 
-my $API_STUDENT_ID = 2;
+my $API_STUDENT_ID = 3;
 my $API_URL = 'http://localhost:8080/cgi/Lab3/lab3.cgi';
 my %API_PARAMS = (
     'student' => $API_STUDENT_ID,
