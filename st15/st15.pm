@@ -207,6 +207,26 @@ sub LoadFromFile
 };
 
 sub SendToDB{
+	my $url = 'http://localhost/cgi-bin/lab3.cgi';
+	my $useragent = new LWP::UserAgent;
+	my $student = 5; #На момент, когда залил сюда лабу
+        
+        $url.="?Num&student=$student&action=3&";
+        my @Attributes=();
+	foreach my $item(@Objects){
+		@Attributes=undef();
+		$Attributes[0]=$_->{Name};
+		$Attributes[1]=$_->{Attribute1},
+		$Attributes[2]=$_->{Attribute2};
+		$Attributes[3]=$_->{Attribute3},
+		$Attributes[4]=$_->{Unique},
+		my $raq = $url;
+		foreach my $eln(@Attributes){
+			$raq.="$eln=$item->{$eln}&";
+		}
+		my $qwe = new HTTP::Request(GET =>Encode::encode('windows-1251', Encode::decode('cp866', $raq)));
+		$useragent->request($qwe);
+	}
 }
 
 return 1;
