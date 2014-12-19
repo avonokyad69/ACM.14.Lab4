@@ -5,6 +5,7 @@ use st01::st01;
 use st05::st05;
 use st10::st10;
 use st12::st12;
+use st15::st15;
 use st21::st21;
 
 my @MODULES = 
@@ -13,6 +14,7 @@ my @MODULES =
 	\&ST05::st05,
 	\&ST10::st10,
 	\&ST12::st12,
+	\&ST15::st15,
 	\&ST21::st21
 );
 
@@ -22,6 +24,7 @@ my @NAMES =
 	"05. Girgushkina",
 	"10. Kuklianov",
 	"Kushnikov V.", #12
+	"15. Pridachin",
 	"21. Shilenkov"
 );
 
