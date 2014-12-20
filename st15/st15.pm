@@ -66,7 +66,7 @@ sub Add
 		Attribute1=>$Attributes[1],
 		Attribute2=>$Attributes[2],
 		Attribute3=>$Attributes[3],
-		Unique=>$Attributes[4],
+		UniqueAttribute=>$Attributes[4],
 	};
 	push(@Objects,$object);	
 	return 1;
@@ -102,7 +102,7 @@ sub Edit
 					Attribute1=>$Attributes[1],
 					Attribute2=>$Attributes[2],
 					Attribute3=>$Attributes[3],
-					Unique=>$Attributes[4],
+					UniqueAttribute=>$Attributes[4],
 				};
 				@Objects[$i-1]= $object;
 				Display();
@@ -151,7 +151,7 @@ sub Display
 			print "Attribute1 - $_->{Attribute1}\n";
 			print "Attribute2 - $_->{Attribute2}\n";
 			print "Attribute3 - $_->{Attribute3}\n";
-			if ($_->{Unique}==1){
+			if ($_->{UniqueAttribute}==1){
 				print "Unique - yes\n";
 			}
 			$counter++;
@@ -173,7 +173,7 @@ sub SaveToFile
 		$Attributes[1]=$_->{Attribute1},
 		$Attributes[2]=$_->{Attribute2};
 		$Attributes[3]=$_->{Attribute3},
-		$Attributes[4]=$_->{Unique},
+		$Attributes[4]=$_->{UniqueAttribute},
 		push(@Attributes,";");
 		$hash{$counter}=join(",",@Attributes);
 		$counter++;
@@ -196,7 +196,7 @@ sub LoadFromFile
 				Attribute1=>@Buff2[1],
 				Attribute2=>@Buff2[2],
 				Attribute3=>@Buff2[3],
-				Unique=>@Buff2[4],
+				UniqueAttribute=>@Buff2[4],
 			};
 		push(@Objects,$object);				
 		}
@@ -215,11 +215,11 @@ sub SendToDB{
         my @Attributes=();
 	foreach my $item(@Objects){
 		@Attributes=undef();
-		$Attributes[0]=$_->{Name};
-		$Attributes[1]=$_->{Attribute1},
-		$Attributes[2]=$_->{Attribute2};
-		$Attributes[3]=$_->{Attribute3},
-		$Attributes[4]=$_->{Unique},
+		$Attributes[0]=$item->{Name};
+		$Attributes[1]=$item->{Attribute1},
+		$Attributes[2]=$item->{Attribute2};
+		$Attributes[3]=$item->{Attribute3},
+		$Attributes[4]=$item->{UniqueAttribute},
 		my $raq = $url;
 		foreach my $eln(@Attributes){
 			$raq.="$eln=$item->{$eln}&";
