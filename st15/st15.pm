@@ -26,6 +26,13 @@ my @ReferencesToMenuItems =(
 	\&LoadFromFile,
 	\&SendToDB);
 	
+my @Attributes=(
+	'Name',
+	'Attribute1',
+	'Attribute2',
+	'Attribute3',
+	'UniqueAttribute');
+	
 sub st15{
 	my $ch;
 	while(1){
@@ -42,68 +49,60 @@ sub st15{
 	}
 };
 	
-sub Add
-{	
- 	my @Attributes=();
- 	print "\nPlease enter the name: "; push(@Attributes,<STDIN>+"\cZ"); 
-	print "Please enter the value of the first attribute: "; push(@Attributes,<STDIN>+"\cZ");  
-	print "Please enter the value of the second attribute: "; push(@Attributes,<STDIN>+"\cZ"); 
-	print "Please enter the value of the third attribute: "; push(@Attributes,<STDIN>+"\cZ"); 
-	while(1){
-		print "Is it unique ? yes/no: ";
-		chomp(my $ans = <STDIN>);
-		if($ans eq "yes") {
-			push(@Attributes,1);
-			last;
+sub Add{
+	system("cls");
+	my $object = {};
+	foreach(@Attributes){
+		print "$_: ";
+		chomp(my $atr = <STDIN>);
+		if($_ eq $Attributes[-1]){
+			while(1){
+				if($atr eq "yes") {
+					$atr=1;
+					last;
+				}
+				if($atr eq "no") {
+					$atr=0;
+					last;
+				}
+				chomp($atr = <STDIN>);
+				print "please enter yes/no: ";
+			}
 		}
-		if($ans eq "no") {
-			push(@Attributes,0);
-			last;
-		}
-	}	
-	my $object={
-		Name=>$Attributes[0],
-		Attribute1=>$Attributes[1],
-		Attribute2=>$Attributes[2],
-		Attribute3=>$Attributes[3],
-		UniqueAttribute=>$Attributes[4],
-	};
-	push(@Objects,$object);	
-	return 1;
+		$object->{$_} = $atr;
+	}
+	@Objects=(@Objects,$object);
 };
 
-sub Edit
-{
+sub Edit{
 	Display();
 	if(scalar(@Objects)!=0){
+		system("cls");
 		while(1){
+			Display();
 			print"\nPlease enter the number of the object for editing:\n";
 			my $i=<STDIN>;
 			if(scalar(@Objects[$i-1])!=0){
-				my @Attributes=undef();
-				print "\nPlease enter the name: "; $Attributes[0]=<STDIN>+"\cZ";
-				print "Please enter the value of the first attribute: "; $Attributes[1]=<STDIN>+"\cZ";
-				print "Please enter the value of the second attribute: "; $Attributes[2]=<STDIN>+"\cZ";
-				print "Please enter the value of the third attribute: "; $Attributes[3]=<STDIN>+"\cZ";
-				while(1){
-					print "Is it unique ? yes/no: ";
-					chomp(my $ans = <STDIN>);
-					if($ans eq "yes") {
-						push(@Attributes,1);
-						last;
+				my $object = {};
+				foreach(@Attributes){
+					print "$_: ";
+					chomp(my $atr = <STDIN>);
+					if($_ eq $Attributes[-1]){
+						while(1){							
+							if($atr eq "yes") {
+								$atr=1;
+								last;
+							}
+							if($atr eq "no") {
+								$atr=0;
+								last;
+							}
+							chomp($atr = <STDIN>);
+							print "\nplease enter yes/no: ";
+						}
 					}
-					if($ans eq "no") {
-						push(@Attributes,0);
-						last;
-					}
+					$object->{$_} = $atr;
 				}
-				my $object={
-					Name=>$Attributes[0],
-					Attribute1=>$Attributes[1],
-					Attribute2=>$Attributes[2],
-					Attribute3=>$Attributes[3],
-					UniqueAttribute=>$Attributes[4],
-				};
 				@Objects[$i-1]= $object;
 				Display();
 				last;	
@@ -116,8 +115,7 @@ sub Edit
 	return 1;
 };
 
-sub Delete
-{
+sub Delete{
 	Display();
 	if(scalar(@Objects)!=0){
 		while(1){
@@ -134,11 +132,9 @@ sub Delete
 		}
 	}	
 	return 1;
-	
 };
 
-sub Display
-{	
+sub Display{	
 	if(scalar(@Objects)==0){
 		print"\nThere are no objects in the list. ";
 		print"Please add objects to the list, or load them from the file.\n\n";
@@ -160,8 +156,7 @@ sub Display
 	return 1;
 };
 
-sub SaveToFile
-{
+sub SaveToFile{
 	my %hash=();
 	dbmopen(%hash, "basename", 0644) or die;
 	%hash=undef();
@@ -182,8 +177,7 @@ sub SaveToFile
 	return 1;	
 };
 
-sub LoadFromFile
-{
+sub LoadFromFile{
 	@Objects=();
 	my %hash=undef();
 	dbmopen(%hash,"basename",0644) or die;
@@ -212,14 +206,7 @@ sub SendToDB{
 	my $student = 5; #На момент, когда залил сюда лабу
         
         $url.="?Num&student=$student&action=3&";
-        my @Attributes=();
 	foreach my $item(@Objects){
-		@Attributes=undef();
-		$Attributes[0]=$item->{Name};
-		$Attributes[1]=$item->{Attribute1},
-		$Attributes[2]=$item->{Attribute2};
-		$Attributes[3]=$item->{Attribute3},
-		$Attributes[4]=$item->{UniqueAttribute},
 		my $raq = $url;
 		foreach my $eln(@Attributes){
 			$raq.="$eln=$item->{$eln}&";
