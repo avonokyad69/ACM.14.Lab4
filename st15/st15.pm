@@ -161,16 +161,10 @@ sub SaveToFile{
 	dbmopen(%hash, "basename", 0644) or die;
 	%hash=undef();
 	my $counter=0;
-	my @Attributes=();
 	foreach(@Objects){
-		@Attributes=undef();
-		$Attributes[0]=$_->{Name};
-		$Attributes[1]=$_->{Attribute1},
-		$Attributes[2]=$_->{Attribute2};
-		$Attributes[3]=$_->{Attribute3},
-		$Attributes[4]=$_->{UniqueAttribute},
-		push(@Attributes,";");
-		$hash{$counter}=join(",",@Attributes);
+		foreach my $o(@Attributes){
+			$hash{$counter} .= Encode::encode('windows-1251', Encode::decode('cp866', "$o,$rh->{$o};"));
+		}
 		$counter++;
 	}
 	dbmclose(%hash);
@@ -182,22 +176,17 @@ sub LoadFromFile{
 	my %hash=undef();
 	dbmopen(%hash,"basename",0644) or die;
 	foreach my $k(sort keys %hash){
-		my @Buff1=split(/;/,$hash{$k});		
-		foreach(@Buff1){
-			my @Buff2=split(/,/,$_);
-			my $object={
-				Name=>@Buff2[0],
-				Attribute1=>@Buff2[1],
-				Attribute2=>@Buff2[2],
-				Attribute3=>@Buff2[3],
-				UniqueAttribute=>@Buff2[4],
-			};
-		push(@Objects,$object);				
+		$hash{$k} = Encode::encode('cp866', Encode::decode('windows-1251', $hash{$k}));
+		my $ref2hash = {};
+		my @array = split(/;/,$hash{$k});
+		foreach my $ar(@array){
+			my ($key, $val) = split(/,/, $ar);
+			$ref2hash->{$key}=$val;
 		}
+		@Objects=(@Objects,$ref2hash);
 	}
-	dbmclose(%hash);	
+	dbmclose(%hash);
 	Display();
-	return 1;
 };
 
 sub SendToDB{
