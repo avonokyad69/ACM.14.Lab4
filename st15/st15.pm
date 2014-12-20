@@ -161,7 +161,7 @@ sub SaveToFile{
 	dbmopen(%hash, "basename", 0644) or die;
 	%hash=undef();
 	my $counter=0;
-	foreach(@Objects){
+	foreach my $rh (@Objects){
 		foreach my $o(@Attributes){
 			$hash{$counter} .= Encode::encode('windows-1251', Encode::decode('cp866', "$o,$rh->{$o};"));
 		}
