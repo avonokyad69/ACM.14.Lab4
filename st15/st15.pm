@@ -157,9 +157,9 @@ sub Display{
 };
 
 sub SaveToFile{
-	my %hash=();
+	my %hash;
 	dbmopen(%hash, "basename", 0644) or die;
-	%hash=undef();
+	%hash=();
 	my $counter=0;
 	foreach my $rh (@Objects){
 		foreach my $o(@Attributes){
