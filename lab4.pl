@@ -2,6 +2,7 @@
 
 use strict;
 use st01::st01;
+use st03::st03;
 use st05::st05;
 use st09::st09;
 use st10::st10;
@@ -13,6 +14,7 @@ use st21::st21;
 my @MODULES = 
 (
 	\&ST01::st01,
+	\&ST03::st03,
 	\&ST05::st05,
 	\&ST09::st09,
 	\&ST10::st10,
@@ -25,6 +27,7 @@ my @MODULES =
 my @NAMES = 
 (
 	"Student 01",
+	"04. Vasileva V",
 	"05. Girgushkina",
 	"09. Kuzmin",
 	"10. Kuklianov",
