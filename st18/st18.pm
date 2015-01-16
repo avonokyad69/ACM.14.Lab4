@@ -5,11 +5,11 @@ use warnings;
 use utf8;
 use Encode;
 use HTTP::Cookies;
-use HTML::TableExtract;
+#use HTML::TableExtract;
 use LWP;
 use Data::Dumper;
 
-my $tcp = HTML::TableExtract->new();
+my $tcp;# = HTML::TableExtract->new();
 
 # Адрес сервера
 my $server = "109.87.186.59";

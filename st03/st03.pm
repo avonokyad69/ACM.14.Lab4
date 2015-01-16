@@ -5,12 +5,12 @@ use warnings;
 use utf8;
 use Encode;
 use HTTP::Cookies;
-use HTML::TableExtract;
+#use HTML::TableExtract;
 use LWP;
 use Data::Dumper;
 use HTTP::Request::Common qw(POST);
 
-my $tcp = HTML::TableExtract->new();
+my $tcp;# = HTML::TableExtract->new();
 
 
 my $server = "109.87.186.59";
