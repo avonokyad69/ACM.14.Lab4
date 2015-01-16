@@ -1,4 +1,4 @@
-﻿package Lab4;
+﻿package ST03;
 use 5.010;
 use strict;
 use warnings;
@@ -27,7 +27,7 @@ my $student = "Student name";
 
 my @elements = ();
 
-sub main()
+sub st03()
 {
 	my $choice = 0;
 	my @commands = (sub {say "good bye !"}, \&add, \&edit, \&del, \&show);
@@ -87,7 +87,7 @@ sub add()
 		Encode::from_to($html, 'utf8', 'cp866');
 		print $html;
 	}
-	return 0;
+	
 }
 
 sub edit()
@@ -130,7 +130,7 @@ sub edit()
 	
 		print $html;
 	}
-	return 0;
+	
 }
 
 
@@ -167,7 +167,7 @@ sub del()
 		Encode::from_to($html, 'utf8', 'cp866');
 		print $html;
 	}	
-	return 0;
+
 }
 
 
@@ -204,7 +204,7 @@ sub show()
 		Encode::from_to($html, 'utf8', 'cp866');
 		print $html;
 	}	
-	return 0;
+	
 }
 
 
