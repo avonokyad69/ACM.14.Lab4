@@ -6,13 +6,9 @@ use warnings;
 use utf8;
 use Encode;
 use HTTP::Cookies;
-#use HTML::TableExtract;
 use LWP;
 use Data::Dumper;
 use HTTP::Request::Common qw(POST);
-
-my $tcp;# = HTML::TableExtract->new();
-
 
 my $server = "109.87.186.59";
 my $port = "8888";
@@ -24,15 +20,19 @@ $ua->agent("Mozzila/8.0");
 $cookies->set_cookie(0, 'db_type', 'mysql', '/', $server, $port, 0, 0, 86400, 0);
 $ua->cookie_jar($cookies);
 
-my $student = "Student name";
-
-my @elements = ();
+my $st = "Student name";
+my @book = ( 
+	"AUTHOR",
+	"TITLE",
+	"YEAR",
+	);
+my @books = ();
 
 sub st03()
 {
 	my $choice = 0;
-	my @commands = (sub {say "good bye !"}, \&add, \&edit, \&del, \&show);
-	my @menu = ("", "[1].add", "[2].edit", "[3].del", "[4].show", "[0].exit");
+	my @commands = (sub {say "good bye !"}, \&add, \&edit, \&del, \&show, \&send_to_server);
+	my @menu = ("", "[1].add", "[2].edit", "[3].del", "[4].show", "[5].send to server", "[0].exit");
 
 	do
 	{
@@ -40,11 +40,13 @@ sub st03()
 		say foreach(@menu);
 		print "command: ";
 		chomp($choice = <STDIN>); 
-		if ($choice =~ /^\d+$/) 
+		if ($choice =~ /^\d+$/)
 		{
-			if($choice >= 0 && $choice <= 4)
+			if($choice >= 0 && $choice <= 5)
 			{
+				load();
 				$commands[$choice]->();
+				save();
 			}
 		}
 		else
@@ -57,156 +59,127 @@ sub st03()
 	#############################################################################
 }
 
-
 sub add()
-{	
-
+{
 	print "author: "; chomp(my $author = <STDIN>);
 	print "title: "; chomp(my $title = <STDIN>);
 	print "year: "; chomp(my $year = <STDIN>);
-	Encode::from_to($author, 'cp866', 'utf8'); utf8::decode($author);
-	Encode::from_to($title, 'cp866', 'utf8');	utf8::decode($title);
-	Encode::from_to($year, 'cp866', 'utf8');	utf8::decode($year);
-
-	my $req = 	POST $url,
-				Content_Type => 'form-data',
-				Content => [
-							a_a 	=> 	$author,
-							a_n 	=> 	$title,
-							a_y 	=> 	$year,
-							add 	=> 	"add",
-							db_type =>	"mysql",
-							student	=>	$student,
-							];	
-
-	my $res = $ua->request($req);
-
-
-	if($res->is_success)
+	push @books, 
 	{
-		print "\t\tAdd ok.\n";
-
-	} else {
-		print "\t\tAdd fail.\n";
-		my $html = $res->content;
-		Encode::from_to($html, 'utf8', 'cp866');
-
-		print $html;
-	}
+		$book[0] => $author,
+		$book[1] => $title,
+		$book[2] => $year
+	};
 	return 0;
 }
-
-
 sub edit()
 {
-	print "edit elem by id == ";
+	print "edit elem by index == ";
 	chomp(my $index = <STDIN>);
-	
-	print "author: "; chomp(my $author = <STDIN>);
-	print "title: "; chomp(my $title = <STDIN>);
-	print "year: "; chomp(my $year = <STDIN>);
-
-	Encode::from_to($author, 'cp866', 'utf8'); utf8::decode($author);
-	Encode::from_to($title, 'cp866', 'utf8');	utf8::decode($title);
-	Encode::from_to($year, 'cp866', 'utf8');	utf8::decode($year);
-			
-
-	my $req = 	POST $url,
-				Content_Type => 'form-data',
-				Content => [
-							id		=>	$index,
-							e_a 	=> 	$author,
-							e_n 	=> 	$title,
-							e_y 	=> 	$year,
-							set 	=> 	"set",
-							db_type =>	"mysql",
-							student	=>	$student,
-							];
-
-	my $res = $ua->request($req);
-
-	if($res->is_success)
+	if ($index =~ /^\d+$/) 
 	{
-		print "\t\tEdit Ok.\n";
-
-	} else {
-		print "\t\tEdit fail.\n";
-		my $html = $res->content;
-		Encode::from_to($html, 'utf8', 'cp866');
-		print $html;
+		if($index >= 0 && $index <= $#books)
+		{
+			print "author: "; chomp(my $author = <STDIN>);
+			print "title: "; chomp(my $title = <STDIN>);
+			print "year: "; chomp(my $year = <STDIN>);
+			
+			$books[$index]->{$book[0]} = $author;
+			$books[$index]->{$book[1]} = $title;
+			$books[$index]->{$book[2]} = $year;
+		}
 	}
 	return 0;
 }
-
 
 sub del()
 {
-	print "delete elem by id == ";
+	print "delete elem by index == ";
 	chomp(my $index = <STDIN>);
-	if (!($index =~ /^\d+$/))
+	if ($index =~ /^\d+$/) 
 	{
-		my $str = "ID must be number !\n";
-		utf8::encode($str); Encode::from_to($str, 'utf8', 'cp866');
-		print $str;
-		return 0;
+		if($index >= 0 && $index <= $#books)
+		{
+			splice @books, $index, 1;
+		}
 	}
-
-	my $req = 	POST $url,
-				Content_Type => 'form-data',
-				Content => [
-							id		=>	$index,
-							yes 	=> 	"yes",
-							db_type =>	"mysql",
-							student	=>	$student,
-							];
-	my $res = $ua->request($req);
-	
-	if($res->is_success)
-	{
-		print "\t\tDelete Ok.\n";
-	} else {
-		print "\t\tDelete fail.\n";
-		my $html = $res->content;
-		Encode::from_to($html, 'utf8', 'cp866');
-		print $html;
-	}	
 	return 0;
 }
 
 sub show()
-{	
+{
+	print "\t$_" foreach(@book);
+	say "";
+	my $i = 0;
 
-	my $params = "?student=$student&db_type=mysql";
-	my $req = new HTTP::Request( POST => $url.$params );
-	$req->content_type("'text/html; charset='utf8'");
-	my $res = $ua->request($req);
-
-	if($res->is_success)
+	for my $href ( @books ) 
 	{
-
-		my $html = $res->content;
-		Encode::from_to($html, 'utf8', 'cp866');
-		my $te = HTML::TableExtract->new( );
-		$te->parse($html);
-	
-		my @tables = $te->tables;
-		my $table = $tables[1];
-		foreach my $row ( $table->rows($table) ) {
-
-			foreach my $cell (@$row)
-			{
-				if(defined $cell){ print $cell."\t";}
-			}
-			say "";
-		}
-		
-
-	} else {
-		print "\t\tPrint fail.\n";
-		my $html = $res->content;
-		Encode::from_to($html, 'utf8', 'cp866');
-		print $html;
+		say "[".$i++."]\t$href->{$book[0]}\t$href->{$book[1]}\t$href->{$book[2]}";		
 	}	
+	return 0;
+}
+
+sub save()
+{
+	dbmopen(my %recs, "dbmfile", 0644) || die "Cannot open DBM dbmfile: $!";
+	%recs = ();
+	my $i = 0;	
+	for my $elem ( @books )
+	{
+		$recs {$i++} = join("\t", 
+			$elem->{$book[0]},
+			$elem->{$book[1]},
+			$elem->{$book[2]}
+			);
+	}
+	# Закрыли
+	dbmclose(%recs);
+	return 0;
+}
+
+sub load()
+{
+	dbmopen(my %recs, "dbmfile", 0644) || die "Cannot open DBM dbmfile: $!";
+	splice @books, 0, $#books + 1; 
+	while ((my $key, my $val) = each %recs)
+	{
+		my @cur_entry = split /\t/, $val;
+		push @books, 
+		{
+			$book[0] => $cur_entry[0],
+			$book[1] => $cur_entry[1],
+			$book[2] => $cur_entry[2]
+		};
+	}
+	dbmclose(%recs);	
+	return 0;
+}
+
+sub send_to_server
+{
+	for my $href ( @books ) 
+	{
+		
+		my($author, $title, $year) = values $href;
+		my $req = 	POST $url,
+					Content_Type => 'form-data',
+					Content => [
+								a_a 	=> 	$author,
+								a_n 	=> 	$title,
+								a_y 	=> 	$year,
+								add 	=> 	"add",
+								db_type =>	"mysql",
+								student	=>	$st,
+								];	
+		my $res = $ua->request($req);
+
+		if($res->is_success)
+		{
+			print "\t\tAdd ok.\n";
+		} else {
+			print "\t\tAdd fail.\n";
+		}
+	}
 	return 0;
 }
 
