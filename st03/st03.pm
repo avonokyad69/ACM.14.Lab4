@@ -1,4 +1,5 @@
-﻿package ST03;
+﻿#!C:\Perl64\bin\perl.exe
+package ST03;
 use 5.010;
 use strict;
 use warnings;
@@ -15,7 +16,7 @@ my $tcp = HTML::TableExtract->new();
 
 my $server = "109.87.186.59";
 my $port = "8888";
-my $script_path = "/cgi-bin/test3.cgi";
+my $script_path = "/cgi-bin/lab3/test3.cgi";
 my $url = "http://".$server.":".$port.$script_path;
 my $ua = new LWP::UserAgent;
 my $cookies = HTTP::Cookies->new();
@@ -36,7 +37,6 @@ sub st03()
 	do
 	{
 		print "-" x 5, "[MENU]", "-" x 5;
-		
 		say foreach(@menu);
 		print "command: ";
 		chomp($choice = <STDIN>); 
@@ -57,6 +57,7 @@ sub st03()
 	#############################################################################
 }
 
+
 sub add()
 {	
 
@@ -66,6 +67,7 @@ sub add()
 	Encode::from_to($author, 'cp866', 'utf8'); utf8::decode($author);
 	Encode::from_to($title, 'cp866', 'utf8');	utf8::decode($title);
 	Encode::from_to($year, 'cp866', 'utf8');	utf8::decode($year);
+
 	my $req = 	POST $url,
 				Content_Type => 'form-data',
 				Content => [
@@ -76,33 +78,39 @@ sub add()
 							db_type =>	"mysql",
 							student	=>	$student,
 							];	
+
 	my $res = $ua->request($req);
+
 
 	if($res->is_success)
 	{
 		print "\t\tAdd ok.\n";
+
 	} else {
 		print "\t\tAdd fail.\n";
 		my $html = $res->content;
 		Encode::from_to($html, 'utf8', 'cp866');
+
 		print $html;
 	}
-	
+	return 0;
 }
+
 
 sub edit()
 {
 	print "edit elem by id == ";
 	chomp(my $index = <STDIN>);
 	
-	
 	print "author: "; chomp(my $author = <STDIN>);
 	print "title: "; chomp(my $title = <STDIN>);
 	print "year: "; chomp(my $year = <STDIN>);
+
 	Encode::from_to($author, 'cp866', 'utf8'); utf8::decode($author);
 	Encode::from_to($title, 'cp866', 'utf8');	utf8::decode($title);
 	Encode::from_to($year, 'cp866', 'utf8');	utf8::decode($year);
 			
+
 	my $req = 	POST $url,
 				Content_Type => 'form-data',
 				Content => [
@@ -114,23 +122,20 @@ sub edit()
 							db_type =>	"mysql",
 							student	=>	$student,
 							];
-	
+
 	my $res = $ua->request($req);
 
 	if($res->is_success)
 	{
 		print "\t\tEdit Ok.\n";
-	
+
 	} else {
 		print "\t\tEdit fail.\n";
-		
 		my $html = $res->content;
-		
 		Encode::from_to($html, 'utf8', 'cp866');
-	
 		print $html;
 	}
-	
+	return 0;
 }
 
 
@@ -140,12 +145,12 @@ sub del()
 	chomp(my $index = <STDIN>);
 	if (!($index =~ /^\d+$/))
 	{
-		my $str = "ID должен быть числом !\n";
+		my $str = "ID must be number !\n";
 		utf8::encode($str); Encode::from_to($str, 'utf8', 'cp866');
 		print $str;
 		return 0;
 	}
-	
+
 	my $req = 	POST $url,
 				Content_Type => 'form-data',
 				Content => [
@@ -154,22 +159,19 @@ sub del()
 							db_type =>	"mysql",
 							student	=>	$student,
 							];
-
 	my $res = $ua->request($req);
+	
 	if($res->is_success)
 	{
 		print "\t\tDelete Ok.\n";
 	} else {
 		print "\t\tDelete fail.\n";
-		
 		my $html = $res->content;
-
 		Encode::from_to($html, 'utf8', 'cp866');
 		print $html;
 	}	
-
+	return 0;
 }
-
 
 sub show()
 {	
@@ -177,19 +179,20 @@ sub show()
 	my $params = "?student=$student&db_type=mysql";
 	my $req = new HTTP::Request( POST => $url.$params );
 	$req->content_type("'text/html; charset='utf8'");
-	
 	my $res = $ua->request($req);
+
 	if($res->is_success)
 	{
+
 		my $html = $res->content;
 		Encode::from_to($html, 'utf8', 'cp866');
-		#$tcp->parse();
 		my $te = HTML::TableExtract->new( );
 		$te->parse($html);
-		
+	
 		my @tables = $te->tables;
 		my $table = $tables[1];
 		foreach my $row ( $table->rows($table) ) {
+
 			foreach my $cell (@$row)
 			{
 				if(defined $cell){ print $cell."\t";}
@@ -197,14 +200,14 @@ sub show()
 			say "";
 		}
 		
-	
+
 	} else {
 		print "\t\tPrint fail.\n";
 		my $html = $res->content;
 		Encode::from_to($html, 'utf8', 'cp866');
 		print $html;
 	}	
-	
+	return 0;
 }
 
 
