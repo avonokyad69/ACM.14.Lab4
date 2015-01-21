@@ -9,6 +9,7 @@ use st05::st05;
 use st09::st09;
 use st10::st10;
 use st12::st12;
+use st13::st13;
 use st15::st15;
 use st17::st17;
 use st18::st18;
@@ -25,6 +26,7 @@ my @MODULES =
 	\&ST09::st09,
 	\&ST10::st10,
 	\&ST12::st12,
+	\&ST13::st13,
 	\&ST15::st15,
 	\&ST17::st17,
 	\&ST18::st18,
@@ -42,6 +44,7 @@ my @NAMES =
 	"09. Kuzmin",
 	"10. Kuklianov",
 	"Kushnikov V.", #12
+	"13. Mansurov",
 	"15. Pridachin",
 	"17. Tikhonov",
 	"18. Chaldina",
